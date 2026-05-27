@@ -1,0 +1,10 @@
+# Caddy reverse proxy configuration
+# Set hostnames via environment variables in .env
+
+{$AGENT_API_HOSTNAME} {
+    reverse_proxy agent-api:8001
+}
+
+{$FRONTEND_HOSTNAME} {
+    reverse_proxy frontend:80
+}

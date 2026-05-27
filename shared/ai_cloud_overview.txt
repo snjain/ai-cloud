@@ -1,0 +1,19 @@
+AI Cloud Platform Overview
+==========================
+
+The AI Cloud platform is a comprehensive solution for building and deploying AI agents.
+It integrates multiple technologies including:
+
+- Pydantic AI for agent orchestration
+- LangGraph for workflow management
+- Supabase for data persistence
+- Mem0 for memory management
+- n8n for workflow automation
+
+Key Features:
+1. Multi-agent routing with guardrails
+2. RAG pipeline for document indexing
+3. Real-time streaming responses
+4. Persistent conversation memory
+
+The platform was built by Shailen Jain as part of the AI Agent Mastery course.

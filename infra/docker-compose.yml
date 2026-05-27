@@ -1,0 +1,94 @@
+name: ai-cloud
+
+services:
+  # ═══════════════════════════════════════════════════════════════════════════════
+  # n8n - No-code workflow automation
+  # ═══════════════════════════════════════════════════════════════════════════════
+  n8n:
+    image: n8nio/n8n:latest
+    container_name: ai-cloud-n8n
+    restart: unless-stopped
+    ports:
+      - "5679:5678"
+    environment:
+      - N8N_ENCRYPTION_KEY=${N8N_ENCRYPTION_KEY}
+      - N8N_USER_MANAGEMENT_JWT_SECRET=${N8N_USER_MANAGEMENT_JWT_SECRET}
+      - N8N_DIAGNOSTICS_ENABLED=false
+      - N8N_PERSONALIZATION_ENABLED=false
+    volumes:
+      - ai_cloud_n8n_storage:/home/node/.n8n
+      - ./n8n/backup:/backup
+    entrypoint: /bin/sh
+    command: -c "n8n import:credentials --separate --input=/backup/credentials 2>/dev/null || true; n8n import:workflow --separate --input=/backup/workflows 2>/dev/null || true; n8n start"
+
+  # ═══════════════════════════════════════════════════════════════════════════════
+  # Agent API - Pydantic AI + LangGraph backend
+  # ═══════════════════════════════════════════════════════════════════════════════
+  agent-api:
+    build: ../apps/agent-backend
+    container_name: ai-cloud-agent-api
+    restart: unless-stopped
+    ports:
+      - "8001:8001"
+    environment:
+      - ENVIRONMENT=${ENVIRONMENT:-development}
+      - LLM_PROVIDER=${LLM_PROVIDER:-openai}
+      - LLM_BASE_URL=${LLM_BASE_URL:-https://api.openai.com/v1}
+      - LLM_API_KEY=${LLM_API_KEY}
+      - LLM_CHOICE=${LLM_CHOICE:-gpt-4o-mini}
+      - VISION_LLM_CHOICE=${VISION_LLM_CHOICE:-gpt-4o-mini}
+      - EMBEDDING_PROVIDER=${EMBEDDING_PROVIDER:-openai}
+      - EMBEDDING_BASE_URL=${EMBEDDING_BASE_URL:-https://api.openai.com/v1}
+      - EMBEDDING_API_KEY=${EMBEDDING_API_KEY}
+      - EMBEDDING_MODEL_CHOICE=${EMBEDDING_MODEL_CHOICE:-text-embedding-3-small}
+      - SUPABASE_URL=${SUPABASE_URL}
+      - SUPABASE_SERVICE_KEY=${SUPABASE_SERVICE_KEY}
+      - DATABASE_URL=${DATABASE_URL}
+      - BRAVE_API_KEY=${BRAVE_API_KEY}
+      - LANGFUSE_PUBLIC_KEY=${LANGFUSE_PUBLIC_KEY}
+      - LANGFUSE_SECRET_KEY=${LANGFUSE_SECRET_KEY}
+      - LANGFUSE_HOST=${LANGFUSE_HOST:-https://cloud.langfuse.com}
+    healthcheck:
+      test: ["CMD", "python", "-c", "import requests; requests.get('http://localhost:8001/health', timeout=5)"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  # ═══════════════════════════════════════════════════════════════════════════════
+  # RAG Pipeline - Document ingestion
+  # ═══════════════════════════════════════════════════════════════════════════════
+  rag-pipeline:
+    build: ../apps/rag-pipeline
+    container_name: ai-cloud-rag-pipeline
+    restart: unless-stopped
+    environment:
+      - SUPABASE_URL=${SUPABASE_URL}
+      - SUPABASE_SERVICE_KEY=${SUPABASE_SERVICE_KEY}
+      - EMBEDDING_BASE_URL=${EMBEDDING_BASE_URL:-https://api.openai.com/v1}
+      - EMBEDDING_API_KEY=${EMBEDDING_API_KEY}
+      - EMBEDDING_MODEL_CHOICE=${EMBEDDING_MODEL_CHOICE:-text-embedding-3-small}
+      - RAG_PIPELINE_TYPE=${RAG_PIPELINE_TYPE:-local}
+      - RUN_MODE=${RUN_MODE:-continuous}
+    volumes:
+      - ../shared:/app/data
+
+  # ═══════════════════════════════════════════════════════════════════════════════
+  # Frontend - React chat interface
+  # ═══════════════════════════════════════════════════════════════════════════════
+  frontend:
+    build:
+      context: ../apps/agent-frontend
+      args:
+        VITE_SUPABASE_URL: ${VITE_SUPABASE_URL}
+        VITE_SUPABASE_ANON_KEY: ${VITE_SUPABASE_ANON_KEY}
+        VITE_AGENT_ENDPOINT: ${VITE_AGENT_ENDPOINT:-http://localhost:8001/api/pydantic-agent}
+    container_name: ai-cloud-frontend
+    restart: unless-stopped
+    ports:
+      - "8082:80"
+    depends_on:
+      - agent-api
+
+volumes:
+  ai_cloud_n8n_storage:
