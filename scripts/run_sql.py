@@ -2,7 +2,6 @@
 """Run SQL files against Supabase Postgres database.
 
 Usage:
-    cd /Users/snjain/github/ai-cloud
     python scripts/run_sql.py
 
 Or via rav:

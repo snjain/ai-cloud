@@ -9,7 +9,7 @@ scripts:
   # Database Setup
   # ============================================================
   db-setup:
-    - cd /Users/snjain/github/ai-cloud && source .venv/bin/activate && python scripts/run_sql.py
+    - source .venv/bin/activate && python scripts/run_sql.py
 
   # ============================================================
   # n8n (Docker)
@@ -45,10 +45,10 @@ scripts:
     - cd apps/agent-backend && uv run pytest tests/ -v
 
   smoke-test:
-    - cd /Users/snjain/github/ai-cloud && uv run pytest tests/ -v -k smoke
+    - uv run pytest tests/ -v -k smoke
 
   coverage:
-    - cd /Users/snjain/github/ai-cloud && uv run pytest --cov=apps/agent-backend --cov-report=html --cov-report=term -v
+    - uv run pytest --cov=apps/agent-backend --cov-report=html --cov-report=term -v
 
   rag-pipeline:
     - cd apps/rag-pipeline && ../../.venv/bin/python main.py --watch ../../shared --interval 5
