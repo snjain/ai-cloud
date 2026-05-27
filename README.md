@@ -48,7 +48,7 @@ A **cloud-native AI agent platform** that progresses from no-code prototyping to
 ### 1. Clone & Setup
 
 ```bash
-cd /Users/snjain/github/ai-cloud
+cd ai-cloud
 
 # Create virtual environment
 uv venv
