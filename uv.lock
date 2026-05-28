@@ -32,6 +32,7 @@ source = { virtual = "." }
 dependencies = [
     { name = "psycopg2-binary" },
     { name = "rav" },
+    { name = "vecs" },
 ]
 
 [package.optional-dependencies]
@@ -55,6 +56,7 @@ all = [
     { name = "streamlit" },
     { name = "supabase" },
     { name = "uvicorn" },
+    { name = "vecs" },
     { name = "watchdog" },
 ]
 backend = [
@@ -133,6 +135,8 @@ requires-dist = [
     { name = "supabase", marker = "extra == 'rag'", specifier = ">=2.15.0" },
     { name = "uvicorn", marker = "extra == 'all'", specifier = ">=0.34.0" },
     { name = "uvicorn", marker = "extra == 'backend'", specifier = ">=0.34.0" },
+    { name = "vecs", specifier = ">=0.4.5" },
+    { name = "vecs", marker = "extra == 'all'", specifier = ">=0.4.5" },
     { name = "vecs", marker = "extra == 'backend'", specifier = ">=0.4.5" },
     { name = "watchdog", marker = "extra == 'all'", specifier = ">=6.0.0" },
     { name = "watchdog", marker = "extra == 'rag'", specifier = ">=6.0.0" },
