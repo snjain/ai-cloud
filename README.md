@@ -55,7 +55,7 @@ uv venv
 source .venv/bin/activate
 
 # Install root dependencies
-uv pip install -e "."
+uv pip install -e ".[all]"
 
 # Copy environment template
 cp .env.example .env
