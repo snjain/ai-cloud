@@ -14,7 +14,7 @@ services:
       - ai_cloud_n8n_storage:/home/node/.n8n
       - ./n8n/backup:/backup
     entrypoint: /bin/sh
-    command: -c "n8n import:credentials --separate --input=/backup/credentials 2>/dev/null || true; n8n import:workflow --separate --input=/backup/workflows 2>/dev/null || true; n8n start"
+    command: -c "n8n import:credentials --separate --input=/backup/credentials 2>/dev/null || true; n8n import:workflow --separate --input=/backup/workflows 2>/dev/null || true; n8n publish:workflow --id=qp9LiDk2AsYxkF1W 2>/dev/null || true; n8n start"
 
 volumes:
   ai_cloud_n8n_storage:
