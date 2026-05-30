@@ -11,7 +11,7 @@ A **cloud-native AI agent platform** that progresses from no-code prototyping to
 ```
 ┌─────────────────┐     ┌─────────────────┐     ┌─────────────────┐
 │   n8n (Docker)  │────►│  Pydantic AI    │────►│   LangGraph     │
-│   localhost:5679│     │  Agent (FastAPI)│     │  Multi-Agent    │
+│   localhost:5678│     │  Agent (FastAPI)│     │  Multi-Agent    │
 │                 │     │  localhost:8001 │     │  localhost:8001 │
 └─────────────────┘     └─────────────────┘     └─────────────────┘
          │                       │                       │
@@ -92,7 +92,7 @@ rav run frontend
 
 | Service | URL | Notes |
 |---------|-----|-------|
-| n8n | http://localhost:5679 | Workflow automation |
+| n8n | http://localhost:5678 | Workflow automation |
 | Agent API | http://localhost:8001 | FastAPI + Pydantic AI |
 | API Docs | http://localhost:8001/docs | Auto-generated Swagger |
 | Frontend | http://localhost:8082 | React chat UI |
